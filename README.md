@@ -1,3 +1,3 @@
-# Computer Graphics Labs 
-# authors: Christoforos Seas
-#          Luke McNaughton
+# Computer Graphics Labs <br />
+# Authors: <br />
+## Christoforos Seas  <br /> Luke McNaughton
