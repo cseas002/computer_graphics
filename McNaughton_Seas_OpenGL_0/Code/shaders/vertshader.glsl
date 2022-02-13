@@ -6,5 +6,5 @@ out vec3 interpolatedColor;
 void main()
 {
     interpolatedColor = color;
-    gl_Position = vec4(position, 0 ,1); // z = 0, w = 1 (w = scaling of xyz)
+    gl_Position = vec4(position, 0 ,1); // z = 0, w = 1
 }
