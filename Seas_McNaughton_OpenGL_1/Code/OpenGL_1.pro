@@ -14,6 +14,7 @@ SOURCES += \
     model.cpp
 
 HEADERS += \
+    ShapeVertice.h \
     mainwindow.h \
     mainview.h \
     model.h
