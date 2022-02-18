@@ -1,9 +1,6 @@
 #include "mainview.h"
-#include "ShapeVertice.h"
 
 #include <QDateTime>
-
-GLuint cubeVBO, cubeVAO, pyramidVBO, pyramidVAO;
 
 /**
  * @brief MainView::MainView
@@ -89,6 +86,7 @@ void MainView::initializeGL() {
                               ver4, ver3, ver8, ver3, ver8, ver7,  // top base
                               ver2, ver1, ver5, ver1, ver5, ver6}; // bottom base
 
+
     // adding pyramid vertices to a vector, containing the combinations of triangles (z points to the screen)
     VERTICE pyramidVector[18] = {pyrVer2, pyrVer1, pyrVer3, pyrVer1, pyrVer3, pyrVer4, // botton base
                                  pyrVer1, pyrVer2, pyrVer5,  // left triangle
@@ -96,20 +94,19 @@ void MainView::initializeGL() {
                                  pyrVer4, pyrVer3, pyrVer5,  // right triangle
                                  pyrVer3, pyrVer1, pyrVer5}; // back base
 
+
     glGenBuffers(1, &cubeVBO); // Generating cube VBO
     glGenVertexArrays(1, &cubeVAO); // Generating cube VAO
 
     glBindBuffer(GL_ARRAY_BUFFER, cubeVBO); // Binding cube's VBO
     glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVector), cubeVector, GL_STATIC_DRAW);
 
-//    glEnableVertexAttribArray(0); // Creating location 0 for coordinates
-//    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VERTICE), (void*) offsetof(VERTICE, x)); // Assigning values of VERTICE for coordinates
-//    glEnableVertexAttribArray(1); // Creating location 1 for color
-//    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VERTICE), (void*) offsetof(VERTICE, r)); // Assigning values of VERTICE for color
-
     // Doing the same procedure for pyramid
     glGenBuffers(1, &pyramidVBO); // Generating pyramid's VBO
     glGenVertexArrays(1, &pyramidVAO); // Generating pyramid's VAO
+
+    glBindVertexArray(cubeVAO); // Binding cube's VAO
+    glBindVertexArray(pyramidVAO); // Binding pyramid's VAO
 
     glBindBuffer(GL_ARRAY_BUFFER, pyramidVBO); // Binding pyramid's VBO
     glBufferData(GL_ARRAY_BUFFER, sizeof(pyramidVector), pyramidVector, GL_STATIC_DRAW);
@@ -119,6 +116,14 @@ void MainView::initializeGL() {
 //    glEnableVertexAttribArray(1); // Creating location 1 for color
 //    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VERTICE), (void*) offsetof(VERTICE, r)); // Assigning values of VERTICE for color
 
+    projectionTransformation.fill(60);
+    transformShape(cubeMatrix, 2, 0, -6);
+    transformShape(pyramidMatrix, -2, 0, -6);
+}
+
+void MainView::transformShape(QMatrix4x4 shape, float x, float y, float z) {
+    shape.setToIdentity();
+    shape.translate(x, y, z);
 }
 
 void MainView::createShaderProgram() {
@@ -128,6 +133,17 @@ void MainView::createShaderProgram() {
     program.addShaderFromSourceFile(QOpenGLShader::Fragment,
                                            ":/shaders/fragshader.glsl");
     program.link();
+
+    // added code
+    cubeModelLocation = program.uniformLocation("modelTransform"); // extracting uniform locations
+    pyramidModelLocation = program.uniformLocation("modelTransform");
+    cubeProjectLocation = program.uniformLocation("projectTransform");
+    pyramidProjectLocation = program.uniformLocation("projectTransform");
+    if (cubeModelLocation  == -1 || pyramidModelLocation == -1 || cubeProjectLocation == -1 || pyramidProjectLocation == -1) {
+            qDebug() << "cannot create uniformLocation\n";
+            return ;
+        }
+
 }
 
 // --- OpenGL drawing
@@ -144,12 +160,21 @@ void MainView::paintGL() {
 
     program.bind();
 
+    glUniformMatrix4fv(cubeModelLocation, 1, GL_FALSE, cubeMatrix.data());
+    glUniformMatrix4fv(pyramidModelLocation, 1, GL_FALSE, pyramidMatrix.data());
+
     // Draw here
     glBindVertexArray(cubeVAO); // Binding cube's VAO
     glDrawArrays(GL_TRIANGLES, 0, 36); // drawing 12 triangles for the cube (2 for each base). Each triangle has 3 vertices
 
     glBindVertexArray(pyramidVAO); // Binding pyramid's VAO
     glDrawArrays(GL_TRIANGLES, 0, 18); // drawing 6 triangles for the pyramid (2 for base). Each triangle has 3 vertices
+
+    // If I comment these 4 lines it doesn't work even if these lines are in initializeGL()
+    glEnableVertexAttribArray(0); // Creating location 0 for coordinates
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VERTICE), (void*) offsetof(VERTICE, x)); // Assigning values of VERTICE for coordinates
+    glEnableVertexAttribArray(1); // Creating location 1 for color
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VERTICE), (void*) offsetof(VERTICE, r)); // Assigning values of VERTICE for color
 
     program.release();
 }

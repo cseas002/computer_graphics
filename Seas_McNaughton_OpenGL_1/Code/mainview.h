@@ -2,7 +2,7 @@
 #define MAINVIEW_H
 
 #include "model.h"
-
+#include "ShapeVertice.h"
 #include <QKeyEvent>
 #include <QMouseEvent>
 #include <QOpenGLWidget>
@@ -33,6 +33,7 @@ protected:
     void initializeGL();
     void resizeGL(int newWidth, int newHeight);
     void paintGL();
+    void transformShape(QMatrix4x4 matrix, float x, float y, float z);
 
     // Functions for keyboard input events
     void keyPressEvent(QKeyEvent *ev);
@@ -53,6 +54,9 @@ private:
     QTimer timer; // timer used for animation
 
     QOpenGLShaderProgram program;
+    GLuint cubeVBO, cubeVAO, pyramidVBO, pyramidVAO;
+    QMatrix4x4 cubeMatrix, pyramidMatrix, projectionTransformation;
+    int cubeModelLocation, cubeProjectLocation, pyramidModelLocation, pyramidProjectLocation;
 
     void createShaderProgram();
 };
