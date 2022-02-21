@@ -75,6 +75,7 @@ void MainView::initializeGL() {
             ver5 = {.x = 1, .y = -1, .z = -1, .r = 0, .g = 0.5, .b = 0.5}, ver6 = {.x = 1, .y = -1, .z = 1, .r = 1, .g = 0.5, .b = 0.5},
             ver7 = {.x = 1, .y = 1, .z = -1, .r = 0.5, .g = 1, .b = 0}, ver8 = {.x = 1, .y = 1, .z = 1, .r = 0.5, .g = 0, .b = 1};
             // creating cube vertices
+
     VERTICE pyrVer1 = ver1, pyrVer2 = ver2, pyrVer3 = ver5, pyrVer4 = ver6, pyrVer5 = {.x = 0, .y = 1, .z = 0, .r = 1, .g = 0, .b = 0};
             // creating pyramid vertices. The base square is the same as the bottom square of the cube and the top (apex) is pyrVer5
 
