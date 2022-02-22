@@ -13,6 +13,12 @@ MainView::MainView(QWidget *parent) : QOpenGLWidget(parent) {
     qDebug() << "MainView constructor";
 
     connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
+    projection.perspective(60, 4/3, 0.1, 100);
+    //transformShape(cubeMatrix, 2, 0, -6);
+    //transformShape(pyramidMatrix, -2, 0, -6);
+
+    cubeMatrix.translate(2,0,-6);
+    pyramidMatrix.translate(-2,0,-6);
 }
 
 /**
@@ -29,6 +35,9 @@ MainView::~MainView() {
     makeCurrent();
     glDeleteBuffers(1, &cubeVBO);
     glDeleteVertexArrays(1, &cubeVAO);
+    glDeleteBuffers(1, &pyramidVBO);
+    glDeleteVertexArrays(1, &pyramidVAO);
+
 }
 
 // --- OpenGL initialization
@@ -112,14 +121,12 @@ void MainView::initializeGL() {
     glBindBuffer(GL_ARRAY_BUFFER, pyramidVBO); // Binding pyramid's VBO
     glBufferData(GL_ARRAY_BUFFER, sizeof(pyramidVector), pyramidVector, GL_STATIC_DRAW);
 
-//    glEnableVertexAttribArray(0); // Creating location 0 for coordinates
-//    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VERTICE), (void*) offsetof(VERTICE, x)); // Assigning values of VERTICE for coordinates
-//    glEnableVertexAttribArray(1); // Creating location 1 for color
-//    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VERTICE), (void*) offsetof(VERTICE, r)); // Assigning values of VERTICE for color
+    glEnableVertexAttribArray(0); // Creating location 0 for coordinates
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VERTICE), (void*) offsetof(VERTICE, x)); // Assigning values of VERTICE for coordinates
+    glEnableVertexAttribArray(1); // Creating location 1 for color
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VERTICE), (void*) offsetof(VERTICE, r)); // Assigning values of VERTICE for color
 
-    projectionTransformation.fill(60);
-    transformShape(cubeMatrix, 2, 0, -6);
-    transformShape(pyramidMatrix, -2, 0, -6);
+
 }
 
 void MainView::transformShape(QMatrix4x4 shape, float x, float y, float z) {
@@ -137,13 +144,13 @@ void MainView::createShaderProgram() {
 
     // added code
     cubeModelLocation = program.uniformLocation("modelTransform"); // extracting uniform locations
-    pyramidModelLocation = program.uniformLocation("modelTransform");
+    //pyramidModelLocation = program.uniformLocation("modelTransform");
     cubeProjectLocation = program.uniformLocation("projectTransform");
-    pyramidProjectLocation = program.uniformLocation("projectTransform");
-    if (cubeModelLocation  == -1 || pyramidModelLocation == -1 || cubeProjectLocation == -1 || pyramidProjectLocation == -1) {
-            qDebug() << "cannot create uniformLocation\n";
-            return ;
-        }
+    //pyramidProjectLocation = program.uniformLocation("projectTransform");
+//    if (cubeModelLocation  == -1 || pyramidModelLocation == -1 || cubeProjectLocation == -1 || pyramidProjectLocation == -1) {
+//            qDebug() << "cannot create uniformLocation\n";
+//            return ;
+//        }
 
 }
 
@@ -161,21 +168,18 @@ void MainView::paintGL() {
 
     program.bind();
 
-    glUniformMatrix4fv(cubeModelLocation, 1, GL_FALSE, cubeMatrix.data());
-    glUniformMatrix4fv(pyramidModelLocation, 1, GL_FALSE, pyramidMatrix.data());
+    glUniformMatrix4fv(cubeProjectLocation, 1, GL_FALSE, projection.data());
 
     // Draw here
     glBindVertexArray(cubeVAO); // Binding cube's VAO
+    glUniformMatrix4fv(cubeModelLocation, 1, GL_FALSE, cubeMatrix.data());
     glDrawArrays(GL_TRIANGLES, 0, 36); // drawing 12 triangles for the cube (2 for each base). Each triangle has 3 vertices
 
     glBindVertexArray(pyramidVAO); // Binding pyramid's VAO
+    glUniformMatrix4fv(cubeModelLocation, 1, GL_FALSE, pyramidMatrix.data());
     glDrawArrays(GL_TRIANGLES, 0, 18); // drawing 6 triangles for the pyramid (2 for base). Each triangle has 3 vertices
 
-    // If I comment these 4 lines it doesn't work even if these lines are in initializeGL()
-    glEnableVertexAttribArray(0); // Creating location 0 for coordinates
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VERTICE), (void*) offsetof(VERTICE, x)); // Assigning values of VERTICE for coordinates
-    glEnableVertexAttribArray(1); // Creating location 1 for color
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VERTICE), (void*) offsetof(VERTICE, r)); // Assigning values of VERTICE for color
+
 
     program.release();
 }
@@ -190,8 +194,8 @@ void MainView::paintGL() {
  */
 void MainView::resizeGL(int newWidth, int newHeight) {
     // TODO: Update projection to fit the new aspect ratio
-    Q_UNUSED(newWidth)
-    Q_UNUSED(newHeight)
+   projection.setToIdentity();
+   projection.perspective(60, (float(newWidth)/ float(newHeight)), 0.1, 100);
 }
 
 // --- Public interface

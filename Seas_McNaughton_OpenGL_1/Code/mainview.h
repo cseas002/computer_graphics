@@ -55,8 +55,9 @@ private:
 
     QOpenGLShaderProgram program;
     GLuint cubeVBO, cubeVAO, pyramidVBO, pyramidVAO;
-    QMatrix4x4 cubeMatrix, pyramidMatrix, projectionTransformation;
-    int cubeModelLocation, cubeProjectLocation, pyramidModelLocation, pyramidProjectLocation;
+    QMatrix4x4 cubeMatrix, pyramidMatrix, projection;
+    GLint cubeModelLocation, cubeProjectLocation, pyramidModelLocation, pyramidProjectLocation;
+
 
     void createShaderProgram();
 };
