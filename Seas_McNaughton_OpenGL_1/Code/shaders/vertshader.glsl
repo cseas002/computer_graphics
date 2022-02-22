@@ -17,7 +17,6 @@ out vec3 vertColor;
 void main()
 {
     // gl_Position is the output (a vec4) of the vertex shader
-    // Currently without any transformation
-    gl_Position = vec4(vertCoordinates_in, 1.0F);
+    gl_Position = projectTransform * modelTransform * vec4(vertCoordinates_in, 1.0F);
     vertColor = vertColor_in;
 }

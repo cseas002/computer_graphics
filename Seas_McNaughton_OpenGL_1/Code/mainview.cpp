@@ -13,8 +13,14 @@ MainView::MainView(QWidget *parent) : QOpenGLWidget(parent) {
     qDebug() << "MainView constructor";
 
     connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
-}
+    projectionTransformation.perspective(60, 4/3, 0.1, 100);
 
+
+//    transformShape(cubeMatrix, 2, 0, -6);
+//    transformShape(pyramidMatrix, -2, 0, -6);
+    cubeMatrix.translate(2, 0, -6);
+    pyramidMatrix.translate(-2, 0, -6);
+}
 /**
  * @brief MainView::~MainView
  *
@@ -29,6 +35,8 @@ MainView::~MainView() {
     makeCurrent();
     glDeleteBuffers(1, &cubeVBO);
     glDeleteVertexArrays(1, &cubeVAO);
+    glDeleteBuffers(1, &pyramidVBO);
+    glDeleteVertexArrays(1, &pyramidVAO);
 }
 
 // --- OpenGL initialization
@@ -68,40 +76,48 @@ void MainView::initializeGL() {
 
     createShaderProgram();
 
-    glEnable(GL_CULL_FACE);
 
-    VERTICE ver1 = {.x = -1, .y = -1, .z = -1, .r = 0, .g = 0, .b = 1}, ver2 = {.x = -1, .y = -1, .z = 1, .r = 0, .g = 1, .b = 0},
-            ver3 = {.x = -1, .y = 1, .z = -1, .r = 0, .g = 1, .b = 1}, ver4 = {.x = -1, .y = 1, .z = 1, .r = 1, .g = 0, .b = 0},
-            ver5 = {.x = 1, .y = -1, .z = -1, .r = 0, .g = 0.5, .b = 0.5}, ver6 = {.x = 1, .y = -1, .z = 1, .r = 1, .g = 0.5, .b = 0.5},
-            ver7 = {.x = 1, .y = 1, .z = -1, .r = 0.5, .g = 1, .b = 0}, ver8 = {.x = 1, .y = 1, .z = 1, .r = 0.5, .g = 0, .b = 1};
+    VERTICE a = {.x = -1, .y = -1, .z = 1, .r = 0.1, .g = 0.2, .b = 0.3}, b = {.x = 1, .y = -1, .z = 1, .r = 0.3, .g = 1, .b = 0.23},
+            c = {.x = 1, .y = 1, .z = 1, .r = 0, .g = 1, .b = 1}, d = {.x = -1, .y = 1, .z = 1, .r = 1, .g = 0, .b = 0},
+            e = {.x = -1, .y = -1, .z = -1, .r = 0, .g = 0.5, .b = 0.5}, f = {.x = 1, .y = -1, .z = -1, .r = 0.5, .g = 1, .b = 0},
+            g = {.x = 1, .y = 1, .z = -1, .r = 0, .g = 0.5, .b = 1}, h = {.x = -1, .y = 1, .z = -1, .r = 1, .g = 0, .b = 0.5};
             // creating cube vertices
-    VERTICE pyrVer1 = ver1, pyrVer2 = ver2, pyrVer3 = ver5, pyrVer4 = ver6, pyrVer5 = {.x = 0, .y = 1, .z = 0, .r = 1, .g = 0, .b = 0};
+    VERTICE pyrA = a, pyrB = b, pyrE = e, pyrF = f, pyrTop = {.x = 0, .y = 1, .z = 0, .r = 0, .g = 1, .b = 0};
             // creating pyramid vertices. The base square is the same as the bottom square of the cube and the top (apex) is pyrVer5
 
+//    VERTICE pyrA = {.x = -1, .y = -1, .z = -1, .r = 0.5, .g = 0, .b = 0.2}, pyrB = {.x = 1, .y = -1, .z = -1, .r = 0.3, .g = 0.8, .b = 0.5},
+//            pyrE = {.x = -1, .y = -1, .z = 1, .r = 1, .g = 0.2, .b = 0.1}, pyrF = {.x = 1, .y = -1, .z = 1, .r = 0, .g = 0.21, .b = 0.6},
+//            pyrTop = {.x = 0, .y = 1, .z = 0, .r = 0, .g = 0, .b = 0};
+
     // adding cube vertices to a vector, containing the combinations of triangles (z points to the screen)
-    VERTICE cubeVector[36] = {ver1, ver2, ver3, ver2, ver3, ver4,  // left base
-                              ver5, ver6, ver7, ver6, ver7, ver8,  // right base
-                              ver1, ver3, ver5, ver3, ver5, ver7,  // back base
-                              ver2, ver4, ver6, ver4, ver6, ver8,  // front base
-                              ver4, ver3, ver8, ver3, ver8, ver7,  // top base
-                              ver2, ver1, ver5, ver1, ver5, ver6}; // bottom base
+    VERTICE cubeVector[36] = {e, a, d, d, h, e,  // left base
+                              f, b, c, c, g, f,  // right base
+                              a, b, c, c, d, a,  // back base
+                              e, f, g, g, h, e,  // front base
+                              h, g, c, c, d, h,  // top base
+                              a, e, f, f, b, a}; // bottom base
 
 
     // adding pyramid vertices to a vector, containing the combinations of triangles (z points to the screen)
-    VERTICE pyramidVector[18] = {pyrVer2, pyrVer1, pyrVer3, pyrVer1, pyrVer3, pyrVer4, // botton base
-                                 pyrVer1, pyrVer2, pyrVer5,  // left triangle
-                                 pyrVer2, pyrVer4, pyrVer5,  // front triangle
-                                 pyrVer4, pyrVer3, pyrVer5,  // right triangle
-                                 pyrVer3, pyrVer1, pyrVer5}; // back base
+    VERTICE pyramidVector[18] = {pyrA, pyrE, pyrF, pyrF, pyrB, pyrA, // botton base
+                                 pyrE, pyrA, pyrTop,  // left triangle
+                                 pyrF, pyrE, pyrTop,  // front triangle
+                                 pyrB, pyrF, pyrTop,  // right triangle
+                                 pyrA, pyrB, pyrTop}; // back base
 
 
+    // FROM THIS LINE
     glGenBuffers(1, &cubeVBO); // Generating cube VBO
     glGenVertexArrays(1, &cubeVAO); // Generating cube VAO
+
 
     glBindBuffer(GL_ARRAY_BUFFER, cubeVBO); // Binding cube's VBO
     glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVector), cubeVector, GL_STATIC_DRAW);
 
+    // UNTIL THIS LINE
     // Doing the same procedure for pyramid
+    // FROM THIS LINE
+
     glGenBuffers(1, &pyramidVBO); // Generating pyramid's VBO
     glGenVertexArrays(1, &pyramidVAO); // Generating pyramid's VAO
 
@@ -111,14 +127,12 @@ void MainView::initializeGL() {
     glBindBuffer(GL_ARRAY_BUFFER, pyramidVBO); // Binding pyramid's VBO
     glBufferData(GL_ARRAY_BUFFER, sizeof(pyramidVector), pyramidVector, GL_STATIC_DRAW);
 
-//    glEnableVertexAttribArray(0); // Creating location 0 for coordinates
-//    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VERTICE), (void*) offsetof(VERTICE, x)); // Assigning values of VERTICE for coordinates
-//    glEnableVertexAttribArray(1); // Creating location 1 for color
-//    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VERTICE), (void*) offsetof(VERTICE, r)); // Assigning values of VERTICE for color
+    glEnableVertexAttribArray(0); // Creating location 0 for coordinates
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VERTICE), (void*) offsetof(VERTICE, x)); // Assigning values of VERTICE for coordinates
+    glEnableVertexAttribArray(1); // Creating location 1 for color
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VERTICE), (void*) offsetof(VERTICE, r)); // Assigning values of VERTICE for color
 
-    projectionTransformation.fill(60);
-    transformShape(cubeMatrix, 2, 0, -6);
-    transformShape(pyramidMatrix, -2, 0, -6);
+    // UNTIL THIS LINE
 }
 
 void MainView::transformShape(QMatrix4x4 shape, float x, float y, float z) {
@@ -136,14 +150,13 @@ void MainView::createShaderProgram() {
 
     // added code
     cubeModelLocation = program.uniformLocation("modelTransform"); // extracting uniform locations
-    pyramidModelLocation = program.uniformLocation("modelTransform");
+    pyramidModelLocation = cubeModelLocation;
     cubeProjectLocation = program.uniformLocation("projectTransform");
-    pyramidProjectLocation = program.uniformLocation("projectTransform");
-    if (cubeModelLocation  == -1 || pyramidModelLocation == -1 || cubeProjectLocation == -1 || pyramidProjectLocation == -1) {
+    pyramidProjectLocation = cubeProjectLocation;
+    if (cubeModelLocation  == -1 || cubeProjectLocation == -1) {
             qDebug() << "cannot create uniformLocation\n";
             return ;
         }
-
 }
 
 // --- OpenGL drawing
@@ -160,21 +173,16 @@ void MainView::paintGL() {
 
     program.bind();
 
-    glUniformMatrix4fv(cubeModelLocation, 1, GL_FALSE, cubeMatrix.data());
-    glUniformMatrix4fv(pyramidModelLocation, 1, GL_FALSE, pyramidMatrix.data());
+    glUniformMatrix4fv(cubeProjectLocation, 1, GL_FALSE, projectionTransformation.data());
 
     // Draw here
     glBindVertexArray(cubeVAO); // Binding cube's VAO
+    glUniformMatrix4fv(cubeModelLocation, 1, GL_FALSE, cubeMatrix.data());
     glDrawArrays(GL_TRIANGLES, 0, 36); // drawing 12 triangles for the cube (2 for each base). Each triangle has 3 vertices
 
     glBindVertexArray(pyramidVAO); // Binding pyramid's VAO
+    glUniformMatrix4fv(pyramidModelLocation, 1, GL_FALSE, pyramidMatrix.data());
     glDrawArrays(GL_TRIANGLES, 0, 18); // drawing 6 triangles for the pyramid (2 for base). Each triangle has 3 vertices
-
-    // If I comment these 4 lines it doesn't work even if these lines are in initializeGL()
-    glEnableVertexAttribArray(0); // Creating location 0 for coordinates
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VERTICE), (void*) offsetof(VERTICE, x)); // Assigning values of VERTICE for coordinates
-    glEnableVertexAttribArray(1); // Creating location 1 for color
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VERTICE), (void*) offsetof(VERTICE, r)); // Assigning values of VERTICE for color
 
     program.release();
 }
