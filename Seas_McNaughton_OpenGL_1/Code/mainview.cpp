@@ -51,7 +51,7 @@ void MainView::initializeGL() {
     qDebug() << ":: Initializing OpenGL";
     initializeOpenGLFunctions();
 
-    connect(&debugLogger, SIGNAL( messageLogged( QOpenGLDebugMessage)),
+    connect(&debugLogger, SIGNAL( messageLogged(QOpenGLDebugMessage)),
             this, SLOT(onMessageLogged(QOpenGLDebugMessage)), Qt::DirectConnection);
 
     if (debugLogger.initialize()) {
@@ -76,13 +76,17 @@ void MainView::initializeGL() {
 
     createShaderProgram();
 
-
-    VERTICE a = {.x = -1, .y = -1, .z = 1, .r = 0.1, .g = 0.2, .b = 0.3}, b = {.x = 1, .y = -1, .z = 1, .r = 0.3, .g = 1, .b = 0.23},
+    VERTICE a = {.x = -1, .y = -1, .z = 1, .r = 0.1, .g = 0.2, .b = 0.3}, b = {.x = 1, .y = -1, .z = 1, .r = 0.3, .g = 1, .b = 0.2},
             c = {.x = 1, .y = 1, .z = 1, .r = 0, .g = 1, .b = 1}, d = {.x = -1, .y = 1, .z = 1, .r = 1, .g = 0, .b = 0},
             e = {.x = -1, .y = -1, .z = -1, .r = 0, .g = 0.5, .b = 0.5}, f = {.x = 1, .y = -1, .z = -1, .r = 0.5, .g = 1, .b = 0},
             g = {.x = 1, .y = 1, .z = -1, .r = 0, .g = 0.5, .b = 1}, h = {.x = -1, .y = 1, .z = -1, .r = 1, .g = 0, .b = 0.5};
             // creating cube vertices
-    VERTICE pyrA = a, pyrB = b, pyrE = e, pyrF = f, pyrTop = {.x = 0, .y = 1, .z = 0, .r = 0, .g = 1, .b = 0};
+
+    VERTICE pyrA = {.x = -1, .y = -1, .z = 1, .r = 1, .g = 1, .b = 0},
+            pyrB = {.x = 1, .y = -1, .z = 1, .r = 0, .g = 1, .b = 0},
+            pyrE = {.x = -1, .y = -1, .z = -1, .r = 0, .g = 0, .b = 1},
+            pyrF = {.x = 1, .y = -1, .z = -1, .r = 0, .g = 1, .b = 1},
+            pyrTop = {.x = 0, .y = 1, .z = 0, .r = 1, .g = 0, .b = 0};
             // creating pyramid vertices. The base square is the same as the bottom square of the cube and the top (apex) is pyrVer5
 
 //    VERTICE pyrA = {.x = -1, .y = -1, .z = -1, .r = 0.5, .g = 0, .b = 0.2}, pyrB = {.x = 1, .y = -1, .z = -1, .r = 0.3, .g = 0.8, .b = 0.5},
@@ -91,10 +95,10 @@ void MainView::initializeGL() {
 
     // adding cube vertices to a vector, containing the combinations of triangles (z points to the screen)
     VERTICE cubeVector[36] = {e, a, d, d, h, e,  // left base
+                              h, g, c, c, d, h,  // top base
                               f, b, c, c, g, f,  // right base
                               a, b, c, c, d, a,  // back base
-                              e, f, g, g, h, e,  // front base
-                              h, g, c, c, d, h,  // top base
+                              f, e, h, h, g, f,  // front base
                               a, e, f, f, b, a}; // bottom base
 
 
@@ -110,7 +114,7 @@ void MainView::initializeGL() {
     glGenBuffers(1, &cubeVBO); // Generating cube VBO
     glGenVertexArrays(1, &cubeVAO); // Generating cube VAO
 
-
+    glBindVertexArray(cubeVAO); // Binding cube's VAO
     glBindBuffer(GL_ARRAY_BUFFER, cubeVBO); // Binding cube's VBO
     glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVector), cubeVector, GL_STATIC_DRAW);
 
@@ -121,9 +125,8 @@ void MainView::initializeGL() {
     glGenBuffers(1, &pyramidVBO); // Generating pyramid's VBO
     glGenVertexArrays(1, &pyramidVAO); // Generating pyramid's VAO
 
-    glBindVertexArray(cubeVAO); // Binding cube's VAO
-    glBindVertexArray(pyramidVAO); // Binding pyramid's VAO
 
+    glBindVertexArray(pyramidVAO); // Binding pyramid's VAO
     glBindBuffer(GL_ARRAY_BUFFER, pyramidVBO); // Binding pyramid's VBO
     glBufferData(GL_ARRAY_BUFFER, sizeof(pyramidVector), pyramidVector, GL_STATIC_DRAW);
 
@@ -150,9 +153,9 @@ void MainView::createShaderProgram() {
 
     // added code
     cubeModelLocation = program.uniformLocation("modelTransform"); // extracting uniform locations
-    pyramidModelLocation = cubeModelLocation;
+    pyramidModelLocation = program.uniformLocation("modelTransform");
     cubeProjectLocation = program.uniformLocation("projectTransform");
-    pyramidProjectLocation = cubeProjectLocation;
+    pyramidProjectLocation = program.uniformLocation("projectTransform");
     if (cubeModelLocation  == -1 || cubeProjectLocation == -1) {
             qDebug() << "cannot create uniformLocation\n";
             return ;
@@ -180,6 +183,8 @@ void MainView::paintGL() {
     glUniformMatrix4fv(cubeModelLocation, 1, GL_FALSE, cubeMatrix.data());
     glDrawArrays(GL_TRIANGLES, 0, 36); // drawing 12 triangles for the cube (2 for each base). Each triangle has 3 vertices
 
+    glUniformMatrix4fv(pyramidProjectLocation, 1, GL_FALSE, projectionTransformation.data());
+
     glBindVertexArray(pyramidVAO); // Binding pyramid's VAO
     glUniformMatrix4fv(pyramidModelLocation, 1, GL_FALSE, pyramidMatrix.data());
     glDrawArrays(GL_TRIANGLES, 0, 18); // drawing 6 triangles for the pyramid (2 for base). Each triangle has 3 vertices
@@ -205,12 +210,36 @@ void MainView::resizeGL(int newWidth, int newHeight) {
 
 void MainView::setRotation(int rotateX, int rotateY, int rotateZ) {
     qDebug() << "Rotation changed to (" << rotateX << "," << rotateY << "," << rotateZ << ")";
+//    QVector3D rotation;
+//    if (rotateX < currentRotation.x())
+//        rotation = QVector3D(rotateX - currentRotation.x(), 1, 1);
+//    else if (rotateY < currentRotation.y())
+//        rotation = QVector3D(1, rotateY - currentRotation.y(), 1);
+//    else
+//        rotation = QVector3D(1, 1, rotateZ - currentRotation.z());
+
+//    pyramidMatrix.setToIdentity();
+    pyramidMatrix.rotate(rotateX, 1, 0, 0);
+    pyramidMatrix.rotate(rotateY, 0, 1, 0);
+    pyramidMatrix.rotate(rotateZ, 0, 0, 1);/*
+    pyramidMatrix.rotate(2.6, rotation);
+    cubeMatrix.rotate(0, rotation);*/
+    update();
     Q_UNIMPLEMENTED();
 }
 
 void MainView::setScale(int scale) {
+    if (currentScale == 0) currentScale = 1;
     qDebug() << "Scale changed to " << scale;
-    Q_UNIMPLEMENTED();
+    float scaleFloat = (float) (scale) / 100;
+    float change = scaleFloat / currentScale; // if (change < 1) => Decreasing
+    qDebug() << "Changed to " << change;
+    pyramidMatrix.scale(change);
+    if (scale == 100)
+        currentScale = 1;
+    else
+        currentScale = (float) (scale) / 100;
+    update();
 }
 
 void MainView::setShadingMode(ShadingMode shading) {

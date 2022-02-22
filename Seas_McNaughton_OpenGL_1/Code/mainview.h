@@ -57,6 +57,8 @@ private:
     GLuint cubeVBO, cubeVAO, pyramidVBO, pyramidVAO;
     QMatrix4x4 cubeMatrix, pyramidMatrix, projectionTransformation;
     int cubeModelLocation, cubeProjectLocation, pyramidModelLocation, pyramidProjectLocation;
+    float currentScale = 1;
+    QVector3D currentRotation = QVector3D(0, 0, 0);
 
     void createShaderProgram();
 };
