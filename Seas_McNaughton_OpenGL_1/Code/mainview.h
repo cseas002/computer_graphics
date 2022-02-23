@@ -54,11 +54,14 @@ private:
     QTimer timer; // timer used for animation
 
     QOpenGLShaderProgram program;
-    GLuint cubeVBO, cubeVAO, pyramidVBO, pyramidVAO;
-    QMatrix4x4 cubeMatrix, pyramidMatrix, projectionTransformation;
-    int cubeModelLocation, cubeProjectLocation, pyramidModelLocation, pyramidProjectLocation;
+    GLuint cubeVBO, cubeVAO, pyramidVBO, pyramidVAO, sphereVBO, sphereVAO;
+    QMatrix4x4 model_mat, view_mat, proj_mat;
+    int model_mat_location, view_mat_location, proj_mat_location;
     float currentScale = 1;
+    int currentX = 0, currentY = 0, currentZ  = 0;
     QVector3D currentRotation = QVector3D(0, 0, 0);
+
+    QVector<QVector3D> sphere3DVector;
 
     void createShaderProgram();
 };

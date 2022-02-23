@@ -1,5 +1,6 @@
 #include "mainview.h"
-
+#include <cstdlib>
+#include <ctime>
 #include <QDateTime>
 
 /**
@@ -13,13 +14,6 @@ MainView::MainView(QWidget *parent) : QOpenGLWidget(parent) {
     qDebug() << "MainView constructor";
 
     connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
-    projectionTransformation.perspective(60, 4/3, 0.1, 100);
-
-
-//    transformShape(cubeMatrix, 2, 0, -6);
-//    transformShape(pyramidMatrix, -2, 0, -6);
-    cubeMatrix.translate(2, 0, -6);
-    pyramidMatrix.translate(-2, 0, -6);
 }
 /**
  * @brief MainView::~MainView
@@ -37,6 +31,8 @@ MainView::~MainView() {
     glDeleteVertexArrays(1, &cubeVAO);
     glDeleteBuffers(1, &pyramidVBO);
     glDeleteVertexArrays(1, &pyramidVAO);
+    glDeleteBuffers(1, &sphereVBO);
+    glDeleteVertexArrays(1, &sphereVAO);
 }
 
 // --- OpenGL initialization
@@ -82,24 +78,17 @@ void MainView::initializeGL() {
             g = {.x = 1, .y = 1, .z = -1, .r = 0, .g = 0.5, .b = 1}, h = {.x = -1, .y = 1, .z = -1, .r = 1, .g = 0, .b = 0.5};
             // creating cube vertices
 
-    VERTICE pyrA = {.x = -1, .y = -1, .z = 1, .r = 1, .g = 1, .b = 0},
-            pyrB = {.x = 1, .y = -1, .z = 1, .r = 0, .g = 1, .b = 0},
-            pyrE = {.x = -1, .y = -1, .z = -1, .r = 0, .g = 0, .b = 1},
-            pyrF = {.x = 1, .y = -1, .z = -1, .r = 0, .g = 1, .b = 1},
+    VERTICE pyrA = a, pyrB = b, pyrE = e, pyrF = f,
             pyrTop = {.x = 0, .y = 1, .z = 0, .r = 1, .g = 0, .b = 0};
             // creating pyramid vertices. The base square is the same as the bottom square of the cube and the top (apex) is pyrVer5
 
-//    VERTICE pyrA = {.x = -1, .y = -1, .z = -1, .r = 0.5, .g = 0, .b = 0.2}, pyrB = {.x = 1, .y = -1, .z = -1, .r = 0.3, .g = 0.8, .b = 0.5},
-//            pyrE = {.x = -1, .y = -1, .z = 1, .r = 1, .g = 0.2, .b = 0.1}, pyrF = {.x = 1, .y = -1, .z = 1, .r = 0, .g = 0.21, .b = 0.6},
-//            pyrTop = {.x = 0, .y = 1, .z = 0, .r = 0, .g = 0, .b = 0};
-
     // adding cube vertices to a vector, containing the combinations of triangles (z points to the screen)
     VERTICE cubeVector[36] = {e, a, d, d, h, e,  // left base
-                              h, g, c, c, d, h,  // top base
+                              c, g, h, h, d, c,  // top base
+                              f, e, h, h, g, f,  // front base
                               f, b, c, c, g, f,  // right base
                               a, b, c, c, d, a,  // back base
-                              f, e, h, h, g, f,  // front base
-                              a, e, f, f, b, a}; // bottom base
+                              e, f, b, b, a, e}; // bottom base
 
 
     // adding pyramid vertices to a vector, containing the combinations of triangles (z points to the screen)
@@ -108,6 +97,21 @@ void MainView::initializeGL() {
                                  pyrF, pyrE, pyrTop,  // front triangle
                                  pyrB, pyrF, pyrTop,  // right triangle
                                  pyrA, pyrB, pyrTop}; // back base
+
+    std::srand(std::time(nullptr)); // Generate trully random numbers
+
+    sphere3DVector = Model(":/models/sphere.obj").getVertices();
+
+    VERTICE sphereVector[sizeof(VERTICE) * sphere3DVector.length()];
+    for (int i = 0; i < sphere3DVector.length(); i++) {
+        sphereVector[i].x = sphere3DVector[i].x();
+        sphereVector[i].y = sphere3DVector[i].y();
+        sphereVector[i].z = sphere3DVector[i].z();
+        sphereVector[i].r = (float) std::rand() / (RAND_MAX + 1u); // can also try std::rand() for these
+        sphereVector[i].g = (float) std::rand() / (RAND_MAX + 1u);
+        sphereVector[i].b = (float) std::rand() / (RAND_MAX + 1u);
+    }
+//    free(sphereVector);
 
 
     // FROM THIS LINE
@@ -118,13 +122,17 @@ void MainView::initializeGL() {
     glBindBuffer(GL_ARRAY_BUFFER, cubeVBO); // Binding cube's VBO
     glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVector), cubeVector, GL_STATIC_DRAW);
 
+    glEnableVertexAttribArray(0); // Creating location 0 for coordinates
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VERTICE), (void*) offsetof(VERTICE, x)); // Assigning values of VERTICE for coordinates
+    glEnableVertexAttribArray(1); // Creating location 1 for color
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VERTICE), (void*) offsetof(VERTICE, r)); // Assigning values of VERTICE for color
+
     // UNTIL THIS LINE
     // Doing the same procedure for pyramid
     // FROM THIS LINE
 
     glGenBuffers(1, &pyramidVBO); // Generating pyramid's VBO
     glGenVertexArrays(1, &pyramidVAO); // Generating pyramid's VAO
-
 
     glBindVertexArray(pyramidVAO); // Binding pyramid's VAO
     glBindBuffer(GL_ARRAY_BUFFER, pyramidVBO); // Binding pyramid's VBO
@@ -136,11 +144,21 @@ void MainView::initializeGL() {
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VERTICE), (void*) offsetof(VERTICE, r)); // Assigning values of VERTICE for color
 
     // UNTIL THIS LINE
-}
+    // Doing the same procedure for sphere
+    // FROM THIS LINE
+    glGenBuffers(1, &sphereVBO); // Generating sphere's VBO
+    glGenVertexArrays(1, &sphereVAO); // Generating sphere's VAO
 
-void MainView::transformShape(QMatrix4x4 shape, float x, float y, float z) {
-    shape.setToIdentity();
-    shape.translate(x, y, z);
+    glBindVertexArray(sphereVAO); // Binding sphere's VAO
+    glBindBuffer(GL_ARRAY_BUFFER, sphereVBO); // Binding sphere's VBO
+    glBufferData(GL_ARRAY_BUFFER, sizeof(sphereVector), sphereVector, GL_STATIC_DRAW);
+
+    glEnableVertexAttribArray(0); // Creating location 0 for coordinates
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VERTICE), (void*) offsetof(VERTICE, x)); // Assigning values of VERTICE for coordinates
+    glEnableVertexAttribArray(1); // Creating location 1 for color
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VERTICE), (void*) offsetof(VERTICE, r)); // Assigning values of VERTICE for color
+
+    // UNTIL THIS LINE
 }
 
 void MainView::createShaderProgram() {
@@ -152,11 +170,9 @@ void MainView::createShaderProgram() {
     program.link();
 
     // added code
-    cubeModelLocation = program.uniformLocation("modelTransform"); // extracting uniform locations
-    pyramidModelLocation = program.uniformLocation("modelTransform");
-    cubeProjectLocation = program.uniformLocation("projectTransform");
-    pyramidProjectLocation = program.uniformLocation("projectTransform");
-    if (cubeModelLocation  == -1 || cubeProjectLocation == -1) {
+    model_mat_location = program.uniformLocation("modelTransform"); // extracting uniform locations
+    proj_mat_location = program.uniformLocation("projectTransform");
+    if (model_mat_location  == -1 || proj_mat_location == -1) {
             qDebug() << "cannot create uniformLocation\n";
             return ;
         }
@@ -176,18 +192,43 @@ void MainView::paintGL() {
 
     program.bind();
 
-    glUniformMatrix4fv(cubeProjectLocation, 1, GL_FALSE, projectionTransformation.data());
-
     // Draw here
+    glUniformMatrix4fv(proj_mat_location, 1, GL_FALSE, proj_mat.data());
+
     glBindVertexArray(cubeVAO); // Binding cube's VAO
-    glUniformMatrix4fv(cubeModelLocation, 1, GL_FALSE, cubeMatrix.data());
+    model_mat = QMatrix4x4(); // 1 0 0 - 0 1 0
+    model_mat.translate(2, 0, -6); // 1 0 x - 0 1 y
+    model_mat.scale(currentScale);
+    model_mat.rotate(currentX, QVector3D(1, 0, 0));
+    model_mat.rotate(currentY, QVector3D(0, 1, 0));
+    model_mat.rotate(currentZ, QVector3D(0, 0, 1));
+    glUniformMatrix4fv(model_mat_location, 1, GL_FALSE, model_mat.data());
     glDrawArrays(GL_TRIANGLES, 0, 36); // drawing 12 triangles for the cube (2 for each base). Each triangle has 3 vertices
 
-    glUniformMatrix4fv(pyramidProjectLocation, 1, GL_FALSE, projectionTransformation.data());
+
 
     glBindVertexArray(pyramidVAO); // Binding pyramid's VAO
-    glUniformMatrix4fv(pyramidModelLocation, 1, GL_FALSE, pyramidMatrix.data());
+    model_mat = QMatrix4x4();
+    model_mat.translate(-2, 0, -6); // 1 0 x - 0 1 y
+    model_mat.scale(currentScale);
+    model_mat.rotate(currentX, QVector3D(1, 0, 0));
+    model_mat.rotate(currentY, QVector3D(0, 1, 0));
+    model_mat.rotate(currentZ, QVector3D(0, 0, 1));
+    glUniformMatrix4fv(model_mat_location, 1, GL_FALSE, model_mat.data());
     glDrawArrays(GL_TRIANGLES, 0, 18); // drawing 6 triangles for the pyramid (2 for base). Each triangle has 3 vertices
+
+
+
+    glBindVertexArray(sphereVAO); // Binding sphere's VAO
+    model_mat = QMatrix4x4();
+    model_mat.translate(0, 0, -10); //
+    model_mat.scale(0.04 * currentScale); // setting the scale to 0.04
+//    model_mat.scale(currentScale);
+    model_mat.rotate(currentX, QVector3D(1, 0, 0));
+    model_mat.rotate(currentY, QVector3D(0, 1, 0));
+    model_mat.rotate(currentZ, QVector3D(0, 0, 1));
+    glUniformMatrix4fv(model_mat_location, 1, GL_FALSE, model_mat.data());
+    glDrawArrays(GL_TRIANGLES, 0, sphere3DVector.length());
 
     program.release();
 }
@@ -201,44 +242,26 @@ void MainView::paintGL() {
  * @param newHeight
  */
 void MainView::resizeGL(int newWidth, int newHeight) {
-    // TODO: Update projection to fit the new aspect ratio
+    proj_mat = QMatrix4x4();
+    proj_mat.perspective(60, (float) (newWidth) / (float) (newHeight), 0.1, 100);
     Q_UNUSED(newWidth)
     Q_UNUSED(newHeight)
+    update();
 }
 
 // --- Public interface
 
 void MainView::setRotation(int rotateX, int rotateY, int rotateZ) {
     qDebug() << "Rotation changed to (" << rotateX << "," << rotateY << "," << rotateZ << ")";
-//    QVector3D rotation;
-//    if (rotateX < currentRotation.x())
-//        rotation = QVector3D(rotateX - currentRotation.x(), 1, 1);
-//    else if (rotateY < currentRotation.y())
-//        rotation = QVector3D(1, rotateY - currentRotation.y(), 1);
-//    else
-//        rotation = QVector3D(1, 1, rotateZ - currentRotation.z());
-
-//    pyramidMatrix.setToIdentity();
-    pyramidMatrix.rotate(rotateX, 1, 0, 0);
-    pyramidMatrix.rotate(rotateY, 0, 1, 0);
-    pyramidMatrix.rotate(rotateZ, 0, 0, 1);/*
-    pyramidMatrix.rotate(2.6, rotation);
-    cubeMatrix.rotate(0, rotation);*/
+    currentX = rotateX;
+    currentY = rotateY;
+    currentZ = rotateZ;
     update();
-    Q_UNIMPLEMENTED();
 }
 
 void MainView::setScale(int scale) {
-    if (currentScale == 0) currentScale = 1;
     qDebug() << "Scale changed to " << scale;
-    float scaleFloat = (float) (scale) / 100;
-    float change = scaleFloat / currentScale; // if (change < 1) => Decreasing
-    qDebug() << "Changed to " << change;
-    pyramidMatrix.scale(change);
-    if (scale == 100)
-        currentScale = 1;
-    else
-        currentScale = (float) (scale) / 100;
+    currentScale = (float) (scale) / 100;
     update();
 }
 
