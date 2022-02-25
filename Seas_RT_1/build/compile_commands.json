@@ -1,0 +1,62 @@
+[
+{
+  "directory": "/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/Seas_RT_1/build",
+  "command": "/usr/bin/clang++   -Wall --std=c++14 -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk -o CMakeFiles/ray.dir/Code/image.cpp.o -c \"/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/Seas_RT_1/RayTracer_1(3)/Code/image.cpp\"",
+  "file": "/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/Seas_RT_1/RayTracer_1(3)/Code/image.cpp"
+},
+{
+  "directory": "/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/Seas_RT_1/build",
+  "command": "/usr/bin/clang++   -Wall --std=c++14 -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk -o CMakeFiles/ray.dir/Code/lode/lodepng.cpp.o -c \"/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/Seas_RT_1/RayTracer_1(3)/Code/lode/lodepng.cpp\"",
+  "file": "/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/Seas_RT_1/RayTracer_1(3)/Code/lode/lodepng.cpp"
+},
+{
+  "directory": "/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/Seas_RT_1/build",
+  "command": "/usr/bin/clang++   -Wall --std=c++14 -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk -o CMakeFiles/ray.dir/Code/main.cpp.o -c \"/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/Seas_RT_1/RayTracer_1(3)/Code/main.cpp\"",
+  "file": "/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/Seas_RT_1/RayTracer_1(3)/Code/main.cpp"
+},
+{
+  "directory": "/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/Seas_RT_1/build",
+  "command": "/usr/bin/clang++   -Wall --std=c++14 -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk -o CMakeFiles/ray.dir/Code/objloader.cpp.o -c \"/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/Seas_RT_1/RayTracer_1(3)/Code/objloader.cpp\"",
+  "file": "/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/Seas_RT_1/RayTracer_1(3)/Code/objloader.cpp"
+},
+{
+  "directory": "/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/Seas_RT_1/build",
+  "command": "/usr/bin/clang++   -Wall --std=c++14 -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk -o CMakeFiles/ray.dir/Code/raytracer.cpp.o -c \"/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/Seas_RT_1/RayTracer_1(3)/Code/raytracer.cpp\"",
+  "file": "/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/Seas_RT_1/RayTracer_1(3)/Code/raytracer.cpp"
+},
+{
+  "directory": "/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/Seas_RT_1/build",
+  "command": "/usr/bin/clang++   -Wall --std=c++14 -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk -o CMakeFiles/ray.dir/Code/scene.cpp.o -c \"/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/Seas_RT_1/RayTracer_1(3)/Code/scene.cpp\"",
+  "file": "/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/Seas_RT_1/RayTracer_1(3)/Code/scene.cpp"
+},
+{
+  "directory": "/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/Seas_RT_1/build",
+  "command": "/usr/bin/clang++   -Wall --std=c++14 -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk -o CMakeFiles/ray.dir/Code/shapes/cylinder.cpp.o -c \"/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/Seas_RT_1/RayTracer_1(3)/Code/shapes/cylinder.cpp\"",
+  "file": "/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/Seas_RT_1/RayTracer_1(3)/Code/shapes/cylinder.cpp"
+},
+{
+  "directory": "/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/Seas_RT_1/build",
+  "command": "/usr/bin/clang++   -Wall --std=c++14 -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk -o CMakeFiles/ray.dir/Code/shapes/mesh.cpp.o -c \"/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/Seas_RT_1/RayTracer_1(3)/Code/shapes/mesh.cpp\"",
+  "file": "/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/Seas_RT_1/RayTracer_1(3)/Code/shapes/mesh.cpp"
+},
+{
+  "directory": "/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/Seas_RT_1/build",
+  "command": "/usr/bin/clang++   -Wall --std=c++14 -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk -o CMakeFiles/ray.dir/Code/shapes/quad.cpp.o -c \"/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/Seas_RT_1/RayTracer_1(3)/Code/shapes/quad.cpp\"",
+  "file": "/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/Seas_RT_1/RayTracer_1(3)/Code/shapes/quad.cpp"
+},
+{
+  "directory": "/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/Seas_RT_1/build",
+  "command": "/usr/bin/clang++   -Wall --std=c++14 -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk -o CMakeFiles/ray.dir/Code/shapes/sphere.cpp.o -c \"/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/Seas_RT_1/RayTracer_1(3)/Code/shapes/sphere.cpp\"",
+  "file": "/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/Seas_RT_1/RayTracer_1(3)/Code/shapes/sphere.cpp"
+},
+{
+  "directory": "/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/Seas_RT_1/build",
+  "command": "/usr/bin/clang++   -Wall --std=c++14 -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk -o CMakeFiles/ray.dir/Code/shapes/triangle.cpp.o -c \"/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/Seas_RT_1/RayTracer_1(3)/Code/shapes/triangle.cpp\"",
+  "file": "/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/Seas_RT_1/RayTracer_1(3)/Code/shapes/triangle.cpp"
+},
+{
+  "directory": "/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/Seas_RT_1/build",
+  "command": "/usr/bin/clang++   -Wall --std=c++14 -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk -o CMakeFiles/ray.dir/Code/triple.cpp.o -c \"/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/Seas_RT_1/RayTracer_1(3)/Code/triple.cpp\"",
+  "file": "/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/Seas_RT_1/RayTracer_1(3)/Code/triple.cpp"
+}
+]

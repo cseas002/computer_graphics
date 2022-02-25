@@ -1,0 +1,3 @@
+/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/Seas_RT_1/RayTracer_1(3)/build/CMakeFiles/ray.dir
+/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/Seas_RT_1/RayTracer_1(3)/build/CMakeFiles/edit_cache.dir
+/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/Seas_RT_1/RayTracer_1(3)/build/CMakeFiles/rebuild_cache.dir
