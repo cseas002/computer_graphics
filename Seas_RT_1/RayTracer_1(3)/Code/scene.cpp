@@ -10,6 +10,8 @@
 
 using namespace std;
 
+#define Ia 10
+
 Color Scene::trace(Ray const &ray)
 {
     // Find hit object and distance
@@ -52,7 +54,16 @@ Color Scene::trace(Ray const &ray)
     *        pow(a,b)           a to the power of b
     ****************************************************/
 
-    Color color = material.color;               // placeholder
+    Color color = material.color * material.ka;              // placeholder
+    // int numLights = getNumLights();
+
+    // if (numLights == 0) return color;
+
+    // for (int i = 0; i < numLights; i++) {
+    //     // diffuse reflection
+    //     double Id = 2;
+    //     double Is = pow(Ia, );
+    // }
 
     return color;
 }
