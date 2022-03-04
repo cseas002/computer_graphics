@@ -25,8 +25,9 @@ Hit Triangle::intersect(Ray const &ray)
     float normalDotDir = abs(N.dot(ray.D));
     if (normalDotDir < 0.1)
         return Hit::NO_HIT();
-    float D = N.dot(v0);
-    float t = -(N.dot(ray.O) + D) / normalDotDir;
+    float D = -N.dot(v0);
+    float t = N.dot(ray.O) + D / normalDotDir;
+
     if (t < 0)  return Hit::NO_HIT(); // the triangle is behind 
     
     Vector P = ray.O + t * ray.D;
@@ -51,10 +52,7 @@ Hit Triangle::intersect(Ray const &ray)
     C = edge2.cross(vp2); 
     if (N.dot(C) < 0) return Hit::NO_HIT(); // P is on the right side; 
  
-    return Hit(t, N) ? t > 0 : Hit(t, -N); // this ray hits the triangle 
-    
-    
- 
+    return t > 0 ? Hit(t, N) : Hit(t, -N); // this ray hits the triangle 
 }
 
 Triangle::Triangle(Point const &v0,
@@ -71,12 +69,8 @@ Triangle::Triangle(Point const &v0,
     // which is declared in the header. It can then be used in the intersect function.
     Vector A = v1 - v0;
     Vector B = v2 - v0;
-
-    N.x = (A.x * B.z) - (A.z * B.y);
-    N.y = (A.z * B.x) - (A.z * B.x);
-    N.z = (A.y * B.x) - (A.y * B.x);
         
-    // or can use N = A.cross(B);
+    N = A.cross(B);
         
     N.normalize(); // idk if we should do that
 }
