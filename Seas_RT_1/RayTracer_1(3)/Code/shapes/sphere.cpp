@@ -35,10 +35,6 @@ Hit Sphere::intersect(Ray const &ray)
     double discriminant = b * b - 4 * a * c;
     if (discriminant <= 0)
         return Hit::NO_HIT(); 
-    // else if (discriminant == 0) {
-    //     *t = ray.at((-b + sqrt(discriminant)) / (2 * a));
-    //     return 0;
-    // }
     else
     {
         double t1, t2;
@@ -59,6 +55,8 @@ Hit Sphere::intersect(Ray const &ray)
     *
     * Insert calculation of the sphere's normal at the intersection point.
     ****************************************************/
+
+   
 }
 
 Sphere::Sphere(Point const &pos, double radius)
