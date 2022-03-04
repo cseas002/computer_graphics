@@ -20,7 +20,7 @@ Model::Model(QString filename) {
             line = in.readLine();
             if (line.startsWith("#")) continue; // skip comments
 
-            tokens = line.split(" ", QString::SkipEmptyParts);
+            tokens = line.split(" ", Qt::SkipEmptyParts);
 //            tokens = line.split(" ", Qt::SkipEmptyParts); // For Qt6
 
             // Switch depending on first element
