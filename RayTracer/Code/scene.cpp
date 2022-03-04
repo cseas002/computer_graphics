@@ -1,4 +1,5 @@
 #include "scene.h"
+#include <iostream>
 
 #include "hit.h"
 #include "image.h"
@@ -55,6 +56,7 @@ Color Scene::trace(Ray const &ray)
     Color color = material.color * material.ka;
     int numLights = getNumLights();
 
+    // return (N + 1) / 2;
     if (numLights == 0) return color;
 
     for (int i = 0; i<numLights; i++){

@@ -185,4 +185,6 @@ CMakeFiles/ray.dir/Code/shapes/triangle.cpp.o: \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk/usr/include/c++/v1/__bit_reference \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk/usr/include/c++/v1/__split_buffer \
   /Users/lukemcn/Downloads/RayTracer/Code/shapes/../hit.h \
-  /Users/lukemcn/Downloads/RayTracer/Code/shapes/../ray.h
+  /Users/lukemcn/Downloads/RayTracer/Code/shapes/../ray.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk/usr/include/c++/v1/math.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk/usr/include/math.h
