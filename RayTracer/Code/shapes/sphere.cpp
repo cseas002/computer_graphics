@@ -25,6 +25,11 @@ Hit Sphere::intersect(Ray const &ray)
 
     // Placeholder for actual intersection calculation.
 
+    if (ray.O.distance(position) <= r) // if the ray source is inside the sphere
+        return Hit::NO_HIT();
+        
+
+
     float t=0.0, t1 = 0, t2 = 0;
 
     Triple oc =  ray.O - position;
@@ -33,7 +38,7 @@ Hit Sphere::intersect(Ray const &ray)
     float c = oc.dot(oc) - r*r;
     float discriminant = (b*b - 4*a*c);
 
-    if (discriminant <= 0)
+    if (discriminant < 0)
         return Hit::NO_HIT();
     // else if (discriminant == 0)
     //     t = (-b) / (2 * a);
@@ -45,6 +50,8 @@ Hit Sphere::intersect(Ray const &ray)
         else   
             t = t2;
     }
+    if (t < 0)
+        return Hit::NO_HIT();
 
     // Vector originToPosition = (position - ray.O).normalized();
     // if (originToPosition.dot(ray.D) < 0.999)

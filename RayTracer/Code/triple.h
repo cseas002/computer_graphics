@@ -66,6 +66,7 @@ class Triple
 // --- Vector Operators --------------------------------------------------------
 
         double dot(Triple const &t) const;      // dot product
+        double distance(Triple const &t) const; // distance between two points
         Triple cross(Triple const &t) const;    // cross product
 
         double length() const;

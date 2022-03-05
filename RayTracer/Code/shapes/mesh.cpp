@@ -38,9 +38,16 @@ Mesh::Mesh(string const &filename, Point const &position, Vector const &rotation
         // of the triangle (v0, v1, and v2) here.
 
         // Non-uniform scaling
-//        v0 = ...;
-//        v1 = ...;
-//        v2 = ...;
+       v0.x += scale.x;
+       v0.y += scale.y;
+       v0.z += scale.z;
+       v1.x += scale.x;
+       v1.y += scale.y;
+       v1.z += scale.z;
+       v2.x += scale.x;
+       v2.y += scale.y;
+       v2.z += scale.z;
+       
 
         // Rotation
         // ...
