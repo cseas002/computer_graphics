@@ -22,8 +22,6 @@ Hit Triangle::intersect(Ray const &ray)
     // source: https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-rendering-a-triangle/ray-triangle-intersection-geometric-solution
 
     // Placeholder for actual intersection calculation.
-
-    N.normalize(); // idk if we should do that
     float normalDotDir = N.dot(ray.D);
     if (abs(normalDotDir) < 0.0001)
         return Hit::NO_HIT();
@@ -73,4 +71,5 @@ Triangle::Triangle(Point const &v0,
     Vector B = v2 - v0;
         
     N = A.cross(B);
+    N.normalize();
 }

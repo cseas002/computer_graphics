@@ -53,7 +53,6 @@ Color Scene::trace(Ray const &ray)
     *        pow(a,b)           a to the power of b
     ****************************************************/
 
-    Color Ia = material.color * material.ka;;
 
     Color color = material.color * material.ka;
     int numLights = getNumLights();
@@ -66,15 +65,15 @@ Color Scene::trace(Ray const &ray)
         Light light = *lights.at(i);
         Vector L = (light.position - hit);
         L.normalize();
-        float Id = max(N.dot(L), 0.0);
-        Color diff = Id * Ia;
+        float LN = max(N.dot(L), 0.0);
+        Color diff = LN * light.color * material.kd;
 
         //Calculate specular component of Phong Illumation
-        Vector R = 2*Id*N-L;
+        Vector R = 2*LN*N-L;
         R.normalize();
-        float Is = pow(max(R.dot(V), 0.0), material.n);
-        if (Id<=0) Is = 0;
-        Color spec = Is * light.color * material.ks;
+        float RVn = pow(max(R.dot(V), 0.0), material.n);
+        if (LN==0) RVn = 0;
+        Color spec = RVn * light.color * material.ks;
 
         color += diff + spec;
     }
