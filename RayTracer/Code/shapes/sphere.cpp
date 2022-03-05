@@ -35,6 +35,8 @@ Hit Sphere::intersect(Ray const &ray)
 
     if (discriminant <= 0)
         return Hit::NO_HIT();
+    // else if (discriminant == 0)
+    //     t = (-b) / (2 * a);
     else {
         t1 = (-b + sqrt(discriminant)) / (2 * a);
         t2 = (-b - sqrt(discriminant)) / (2 * a);

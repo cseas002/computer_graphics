@@ -59,7 +59,7 @@ Color Scene::trace(Ray const &ray)
     // return (N + 1) / 2;
     if (numLights == 0) return color;
 
-    for (int i = 0; i<numLights; i++){
+    for (int i = 0; i<numLights; i++) {
         //Diffuse component of component of Phong Illumination
         Light light = *lights.at(i);
         Vector L = (light.position - hit);

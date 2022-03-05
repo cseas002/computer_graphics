@@ -22,11 +22,11 @@ Hit Triangle::intersect(Ray const &ray)
     // source: https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-rendering-a-triangle/ray-triangle-intersection-geometric-solution
 
     // Placeholder for actual intersection calculation.
-    float normalDotDir = abs(N.dot(ray.D));
-    if (normalDotDir < 0.1)
+    float normalDotDir = N.dot(ray.D);
+    if (abs(normalDotDir) < 0.0001)
         return Hit::NO_HIT();
-    float D = -N.dot(v0);
-    float t = N.dot(ray.O) + D / normalDotDir;
+    float D = -N.dot(v1);
+    float t = -(N.dot(ray.O) + D) / normalDotDir;
 
     if (t < 0)  return Hit::NO_HIT(); // the triangle is behind 
     
