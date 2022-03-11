@@ -133,6 +133,17 @@ double Triple::dot(Triple const &t) const
     return x * t.x + y * t.y + z * t.z;
 }
 
+<<<<<<< HEAD:Seas_McNaughton_RT_2/src/triple.cpp
+=======
+double Triple::distance(Triple const &t) const
+{
+    double x2 = (x - t.x) * (x - t.x);
+    double y2 = (y - t.y) * (y - t.y);
+    double z2 = (z - t.z) * (z - t.z);
+    return sqrt(x2 + y2 + z2);
+}
+
+>>>>>>> 9ec45e70434d986db2d11d7ec7fa18390d66aac9:RayTracer/Code/triple.cpp
 Triple Triple::cross(Triple const &t) const
 {
     return Triple(y*t.z - z*t.y,

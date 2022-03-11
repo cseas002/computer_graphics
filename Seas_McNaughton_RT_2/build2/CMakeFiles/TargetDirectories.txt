@@ -1,0 +1,3 @@
+/Users/cseas/Downloads/computer_graphics/RayTracer/build2/CMakeFiles/ray.dir
+/Users/cseas/Downloads/computer_graphics/RayTracer/build2/CMakeFiles/edit_cache.dir
+/Users/cseas/Downloads/computer_graphics/RayTracer/build2/CMakeFiles/rebuild_cache.dir

@@ -1,3 +1,7 @@
 {
+<<<<<<< HEAD
     "cmake.sourceDirectory": "${workspaceFolder}/Seas_RT_1/RayTracer_1(3)"
+=======
+    "cmake.sourceDirectory": "${workspaceFolder}/RayTracer"
+>>>>>>> 9ec45e70434d986db2d11d7ec7fa18390d66aac9
 }
