@@ -56,7 +56,8 @@ SOURCES       = ../Code/main.cpp \
 		../Code/mainwindow.cpp \
 		../Code/mainview.cpp \
 		../Code/user_input.cpp \
-		../Code/model.cpp qrc_resources.cpp \
+		../Code/model.cpp \
+		../Code/utility.cpp qrc_resources.cpp \
 		moc_mainwindow.cpp \
 		moc_mainview.cpp
 OBJECTS       = main.o \
@@ -64,6 +65,7 @@ OBJECTS       = main.o \
 		mainview.o \
 		user_input.o \
 		model.o \
+		utility.o \
 		qrc_resources.o \
 		moc_mainwindow.o \
 		moc_mainview.o
@@ -247,6 +249,7 @@ DIST          = /Users/cseas/Qt/5.15.2/clang_64/mkspecs/features/spec_pre.prf \
 		/Users/cseas/Qt/5.15.2/clang_64/mkspecs/features/qt_config.prf \
 		/Users/cseas/Qt/5.15.2/clang_64/mkspecs/macx-clang/qmake.conf \
 		/Users/cseas/Qt/5.15.2/clang_64/mkspecs/features/spec_post.prf \
+		../Code/.qmake.stash \
 		/Users/cseas/Qt/5.15.2/clang_64/mkspecs/features/exclusive_builds.prf \
 		/Users/cseas/Qt/5.15.2/clang_64/mkspecs/features/mac/sdk.prf \
 		/Users/cseas/Qt/5.15.2/clang_64/mkspecs/features/toolchain.prf \
@@ -282,7 +285,8 @@ DIST          = /Users/cseas/Qt/5.15.2/clang_64/mkspecs/features/spec_pre.prf \
 		../Code/mainwindow.cpp \
 		../Code/mainview.cpp \
 		../Code/user_input.cpp \
-		../Code/model.cpp
+		../Code/model.cpp \
+		../Code/utility.cpp
 QMAKE_TARGET  = OpenGL_2
 DESTDIR       = 
 TARGET        = OpenGL_2.app/Contents/MacOS/OpenGL_2
@@ -485,6 +489,7 @@ Makefile: ../Code/OpenGL_2.pro /Users/cseas/Qt/5.15.2/clang_64/mkspecs/macx-clan
 		/Users/cseas/Qt/5.15.2/clang_64/mkspecs/features/qt_config.prf \
 		/Users/cseas/Qt/5.15.2/clang_64/mkspecs/macx-clang/qmake.conf \
 		/Users/cseas/Qt/5.15.2/clang_64/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		/Users/cseas/Qt/5.15.2/clang_64/mkspecs/features/exclusive_builds.prf \
 		/Users/cseas/Qt/5.15.2/clang_64/mkspecs/features/mac/sdk.prf \
 		/Users/cseas/Qt/5.15.2/clang_64/mkspecs/features/toolchain.prf \
@@ -699,6 +704,7 @@ Makefile: ../Code/OpenGL_2.pro /Users/cseas/Qt/5.15.2/clang_64/mkspecs/macx-clan
 /Users/cseas/Qt/5.15.2/clang_64/mkspecs/features/qt_config.prf:
 /Users/cseas/Qt/5.15.2/clang_64/mkspecs/macx-clang/qmake.conf:
 /Users/cseas/Qt/5.15.2/clang_64/mkspecs/features/spec_post.prf:
+.qmake.stash:
 /Users/cseas/Qt/5.15.2/clang_64/mkspecs/features/exclusive_builds.prf:
 /Users/cseas/Qt/5.15.2/clang_64/mkspecs/features/mac/sdk.prf:
 /Users/cseas/Qt/5.15.2/clang_64/mkspecs/features/toolchain.prf:
@@ -764,7 +770,7 @@ distdir: FORCE
 	$(COPY_FILE) --parents ../Code/resources.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents /Users/cseas/Qt/5.15.2/clang_64/mkspecs/features/data/dummy.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../Code/mainwindow.h ../Code/mainview.h ../Code/model.h ../Code/vertex.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../Code/main.cpp ../Code/mainwindow.cpp ../Code/mainview.cpp ../Code/user_input.cpp ../Code/model.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../Code/main.cpp ../Code/mainwindow.cpp ../Code/mainview.cpp ../Code/user_input.cpp ../Code/model.cpp ../Code/utility.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../Code/mainwindow.ui $(DISTDIR)/
 
 
@@ -775,6 +781,7 @@ clean: compiler_clean
 
 distclean: clean 
 	-$(DEL_FILE) -r OpenGL_2.app
+	-$(DEL_FILE) .qmake.stash
 	-$(DEL_FILE) Makefile
 
 
@@ -796,8 +803,12 @@ compiler_rcc_clean:
 	-$(DEL_FILE) qrc_resources.cpp
 qrc_resources.cpp: ../Code/resources.qrc \
 		/Users/cseas/Qt/5.15.2/clang_64/bin/rcc \
-		../Code/shaders/fragshader.glsl \
-		../Code/shaders/vertshader.glsl \
+		../Code/shaders/fragshader_normal.glsl \
+		../Code/shaders/vertshader_normal.glsl \
+		../Code/shaders/fragshader_gouraud.glsl \
+		../Code/shaders/vertshader_phong.glsl \
+		../Code/shaders/fragshader_phong.glsl \
+		../Code/shaders/vertshader_gouraud.glsl \
 		../Code/models/flat_surface.obj \
 		../Code/models/cube.obj \
 		../Code/models/cat.obj \
@@ -917,7 +928,34 @@ main.o: ../Code/main.cpp ../Code/mainwindow.h \
 mainwindow.o: ../Code/mainwindow.cpp ../Code/mainwindow.h \
 		/Users/cseas/Qt/5.15.2/clang_64/lib/QtWidgets.framework/Headers/QMainWindow \
 		/Users/cseas/Qt/5.15.2/clang_64/lib/QtWidgets.framework/Headers/qmainwindow.h \
-		ui_mainwindow.h
+		ui_mainwindow.h \
+		../Code/mainview.h \
+		../Code/model.h \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtCore.framework/Headers/QString \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtCore.framework/Headers/qstring.h \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtCore.framework/Headers/QStringList \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtCore.framework/Headers/qstringlist.h \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtCore.framework/Headers/QVector \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtCore.framework/Headers/qvector.h \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtGui.framework/Headers/QVector2D \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtGui.framework/Headers/qvector2d.h \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtGui.framework/Headers/QVector3D \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtGui.framework/Headers/qvector3d.h \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtGui.framework/Headers/QKeyEvent \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtGui.framework/Headers/qevent.h \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtGui.framework/Headers/QMouseEvent \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtWidgets.framework/Headers/QOpenGLWidget \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtWidgets.framework/Headers/qopenglwidget.h \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtGui.framework/Headers/QOpenGLFunctions_3_3_Core \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtGui.framework/Headers/qopenglfunctions_3_3_core.h \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtGui.framework/Headers/QOpenGLDebugLogger \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtGui.framework/Headers/qopengldebug.h \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtGui.framework/Headers/QOpenGLShaderProgram \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtGui.framework/Headers/qopenglshaderprogram.h \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtCore.framework/Headers/QTimer \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtCore.framework/Headers/qtimer.h \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtGui.framework/Headers/QMatrix4x4 \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtGui.framework/Headers/qmatrix4x4.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../Code/mainwindow.cpp
 
 mainview.o: ../Code/mainview.cpp ../Code/mainview.h \
@@ -1001,6 +1039,35 @@ model.o: ../Code/model.cpp ../Code/model.h \
 		/Users/cseas/Qt/5.15.2/clang_64/lib/QtCore.framework/Headers/QTextStream \
 		/Users/cseas/Qt/5.15.2/clang_64/lib/QtCore.framework/Headers/qtextstream.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o model.o ../Code/model.cpp
+
+utility.o: ../Code/utility.cpp ../Code/mainview.h \
+		../Code/model.h \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtCore.framework/Headers/QString \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtCore.framework/Headers/qstring.h \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtCore.framework/Headers/QStringList \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtCore.framework/Headers/qstringlist.h \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtCore.framework/Headers/QVector \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtCore.framework/Headers/qvector.h \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtGui.framework/Headers/QVector2D \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtGui.framework/Headers/qvector2d.h \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtGui.framework/Headers/QVector3D \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtGui.framework/Headers/qvector3d.h \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtGui.framework/Headers/QKeyEvent \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtGui.framework/Headers/qevent.h \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtGui.framework/Headers/QMouseEvent \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtWidgets.framework/Headers/QOpenGLWidget \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtWidgets.framework/Headers/qopenglwidget.h \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtGui.framework/Headers/QOpenGLFunctions_3_3_Core \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtGui.framework/Headers/qopenglfunctions_3_3_core.h \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtGui.framework/Headers/QOpenGLDebugLogger \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtGui.framework/Headers/qopengldebug.h \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtGui.framework/Headers/QOpenGLShaderProgram \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtGui.framework/Headers/qopenglshaderprogram.h \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtCore.framework/Headers/QTimer \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtCore.framework/Headers/qtimer.h \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtGui.framework/Headers/QMatrix4x4 \
+		/Users/cseas/Qt/5.15.2/clang_64/lib/QtGui.framework/Headers/qmatrix4x4.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o utility.o ../Code/utility.cpp
 
 qrc_resources.o: qrc_resources.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qrc_resources.o qrc_resources.cpp

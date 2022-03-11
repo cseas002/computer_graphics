@@ -30,6 +30,7 @@ public:
     void setRotation(int rotateX, int rotateY, int rotateZ);
     void setScale(int scale);
     void setShadingMode(ShadingMode shading);
+    QVector<quint8> imageToBytes(QImage image);
 
 protected:
     void initializeGL();
@@ -54,9 +55,21 @@ private:
     QOpenGLDebugLogger debugLogger;
     QTimer timer; // timer used for animation
 
-    QOpenGLShaderProgram shaderProgram;
-    GLint uniformModelViewTransform;
-    GLint uniformProjectionTransform;
+    QOpenGLShaderProgram shaderProgramNormal, shaderProgramGouraud, shaderProgramPhong;
+    GLint uniformModelViewTransformNormal, uniformModelViewTransformGouraud, uniformModelViewTransformPhong;
+
+    GLint uniformLightPositionGouraud, uniformMaterialAmbientGouraud, uniformMaterialDiffuseGouraud,
+          uniformMaterialSpecularGouraud, uniformMaterialSpecularExpomentGouraud, uniformLightColorGouraud, uniformTextureGouraud;
+
+    GLint uniformLightPositionPhong, uniformMaterialAmbientPhong, uniformMaterialDiffusePhong,
+          uniformMaterialSpecularPhong, uniformMaterialSpecularExpomentPhong, uniformLightColorPhong, uniformTexturePhong;
+
+    GLuint texture;
+
+
+    GLint uniformProjectionTransformNormal, uniformProjectionTransformGouraud, uniformProjectionTransformPhong;
+    GLint uniformNormalTransformNormal, uniformNormalTransformGouraud, uniformNormalTransformPhong;
+    ShadingMode shader;
 
     // Mesh values
     GLuint meshVAO;
@@ -69,13 +82,20 @@ private:
     QVector3D rotation;
     QMatrix4x4 projectionTransform;
 
-    void createShaderProgram();
+    // Normals
+    QMatrix3x3 normalTransform;
+
+    void createShaderProgramNormal();
+    void createShaderProgramGouraud();
+    void createShaderProgramPhong();
     void loadMesh();
 
     void destroyModelBuffers();
 
     void updateProjectionTransform();
     void updateModelTransforms();
+    void updateNormalTransform();
+    void loadTexture(QString file, GLuint texturePtr);
 };
 
 #endif // MAINVIEW_H
