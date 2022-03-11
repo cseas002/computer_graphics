@@ -1,0 +1,3 @@
+/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/McNaughton_Seas_RT_2/build/CMakeFiles/ray.dir
+/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/McNaughton_Seas_RT_2/build/CMakeFiles/edit_cache.dir
+/Users/cseas/Desktop/Groningen/Computer Graphics/Labs/computer_graphics/McNaughton_Seas_RT_2/build/CMakeFiles/rebuild_cache.dir
