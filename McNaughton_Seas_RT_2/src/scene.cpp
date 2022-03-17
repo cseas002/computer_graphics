@@ -55,14 +55,30 @@ Color Scene::trace(Ray const &ray, unsigned depth)
         shadingN = -N;
 
     Color matColor = material.color;
+    if (material.hasTexture){
+        Vector uv = obj->toUV(hit);
+        double u = uv.x;
+        double v = uv.y;
+        matColor = material.texture.colorAt(u, 1 - v);
+    }
+        
 
     // Add ambient once, regardless of the number of lights.
     Color color = material.ka * matColor;
 
     // Add diffuse and specular components.
-    for (auto const &light : lights)
+    for (LightPtr light : lights)
     {
         Vector L = (light->position - hit).normalized();
+
+        if (renderShadows)
+        {
+            std::pair<ObjectPtr, Hit> res = castRay(Ray(hit + L * epsilon, L));
+            if (res.first != nullptr)
+            {
+                continue;
+            }
+        }
 
         // Add diffuse.
         double dotNormal = shadingN.dot(L);
@@ -70,7 +86,7 @@ Color Scene::trace(Ray const &ray, unsigned depth)
         color += diffuse * material.kd * light->color * matColor;
 
         // Add specular.
-        if(dotNormal > 0)
+        if (dotNormal > 0)
         {
             Vector reflectDir = reflect(-L, shadingN); // Note: reflect(..) is not given in the framework.
             double specAngle = std::max(reflectDir.dot(V), 0.0);
@@ -80,14 +96,33 @@ Color Scene::trace(Ray const &ray, unsigned depth)
         }
     }
 
-    if (depth > 0 and material.isTransparent)
+    if (depth > 0)
     {
-        // The object is transparent, and thus refracts and reflects light.
-        // Use Schlick's approximation to determine the ratio between the two.
-    }
-    else if (depth > 0 and material.ks > 0.0)
-    {
-        // The object is not transparent, but opaque.
+        Vector reflectDir = reflect(ray.D, shadingN);
+        Color reflectedColor = trace(Ray(hit + reflectDir * epsilon, reflectDir), depth - 1);
+        if (material.isTransparent)
+        {
+            double ni = 1;
+            double nt = material.nt;
+            // printf("swap=%d depth=%d\n", N.dot(V) >= 0.0, depth);
+
+            if (N.dot(V) <= 0.0)
+                std::swap(ni, nt);
+
+            double kr0 = pow((ni - nt) / (ni + nt), 2);
+            double cos = -ray.D.normalized().dot(shadingN.normalized());
+            double kr = kr0 + (ni - kr0) * pow((ni - cos), 5);
+            color += reflectedColor * kr;
+
+            Vector T = (ni * (ray.D - ray.D.dot(shadingN) * shadingN)) / nt -
+                       shadingN * sqrt(1 - ni * ni * (1 - pow(ray.D.dot(shadingN), 2)) / pow(nt, 2));
+            Color refractedColor = trace(Ray(hit + T * epsilon, T), depth - 1);
+            color += refractedColor * (1 - kr);
+        }
+        else if (material.ks > 0.0)
+        {
+            color += reflectedColor * material.ks;
+        }
     }
 
     return color;
@@ -98,14 +133,24 @@ void Scene::render(Image &img)
     unsigned w = img.width();
     unsigned h = img.height();
 
+    double ss0 = (double) (supersamplingFactor);
+
     for (unsigned y = 0; y < h; ++y)
         for (unsigned x = 0; x < w; ++x)
         {
-            Point pixel(x + 0.5, h - 1 - y + 0.5, 0);
-            Ray ray(eye, (pixel - eye).normalized());
-            Color col = trace(ray, recursionDepth);
-            col.clamp();
-            img(x, y) = col;
+            Color avgColor;
+            for (int i = 0; i < supersamplingFactor; i++) 
+                for (int j = 0; j < supersamplingFactor; j++) {
+                    Point pixel;
+                    pixel = Point(x + i/ss0 + 1/(ss0*2), h - y - j/ss0 - 1/(ss0*2));
+                     
+                    Ray ray(eye, (pixel - eye).normalized());
+                    Color col = trace(ray, recursionDepth);
+                    avgColor += col;
+            }
+            avgColor /= (pow(ss0, 2));
+            avgColor.clamp();
+            img(x, y) = avgColor;
         }
 }
 
@@ -113,14 +158,14 @@ void Scene::render(Image &img)
 
 // Defaults
 Scene::Scene()
-:
-    objects(),
-    lights(),
-    eye(),
-    renderShadows(false),
-    recursionDepth(0),
-    supersamplingFactor(1)
-{}
+    : objects(),
+      lights(),
+      eye(),
+      renderShadows(true),
+      recursionDepth(0),
+      supersamplingFactor(1)
+{
+}
 
 void Scene::addObject(ObjectPtr obj)
 {

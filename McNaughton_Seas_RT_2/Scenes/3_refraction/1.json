@@ -1,7 +1,7 @@
 {
     "Eye": [200, 200, 1000],
     "Shadows": false,
-    "MaxRecursionDepth": 2,
+    "MaxRecursionDepth": 3,
     "Lights": [
         {
             "position": [-200, 600, 1500],
@@ -49,10 +49,12 @@
             "material":
             {
                 "color": [1.0, 0.0, 0.0],
-                "ka": 0.2,
-                "kd": 0.7,
+                "ka": 0.0,
+                "kd": 0.0,
                 "ks": 0.8,
-                "n": 32
+                "n": 32,
+                "isTransparent": true,
+                "nt": 1.10
             }
         },
         {
