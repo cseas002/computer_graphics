@@ -74,8 +74,9 @@ Color Scene::trace(Ray const &ray, unsigned depth)
         if (renderShadows)
         {
             std::pair<ObjectPtr, Hit> res = castRay(Ray(hit + L * epsilon, L));
-            if (res.first != nullptr)
+            if (res.first != nullptr && res.second.t < (light->position - hit).length())
             {
+                // t = distance to intersection point
                 continue;
             }
         }
@@ -104,7 +105,6 @@ Color Scene::trace(Ray const &ray, unsigned depth)
         {
             double ni = 1;
             double nt = material.nt;
-            // printf("swap=%d depth=%d\n", N.dot(V) >= 0.0, depth);
 
             if (N.dot(V) <= 0.0)
                 std::swap(ni, nt);

@@ -1,0 +1,61 @@
+{
+    "Eye": [200, 200, 1000],
+    "Shadows": false,
+    "MaxRecursionDepth": 3,
+    "Lights": [
+        {
+            "position": [0, 170, 400],
+            "color": [1, 1, 1]
+        }
+    ],
+    "Objects": [
+        {
+            "type": "sphere",
+            "comment": "Red sphere",
+            "position": [200, 200, 1000],
+            "radius": 20,
+            "material":
+            {
+                "color": [1.0, 1.0, 1.0],
+                "ka": 0.0,
+                "kd": 1.0,
+                "ks": 0.0,
+                "n": 32,
+                "isTransparent": false,
+                "nt": 1.10
+            }
+        },
+        {
+            "type": "sphere",
+            "comment": "Transparent sphere",
+            "position": [140, 170, 400],
+            "radius": 50,
+            "rotation": [0,1,0.7],
+            "angle": 90,
+            "material":
+            {
+                "color": [1.0, 1.0, 1.0],
+                "ka": 0.0,
+                "kd": 0.0,
+                "ks": 0.0,
+                "n": 16,
+                "isTransparent": true,
+                "nt": 1.50
+            }
+        },
+        {
+            "type": "sphere",
+            "comment": "Low intensity color sphere",
+            "position": [200, 200, -1000],
+            "radius": 1000,
+            "material":
+            {
+                "color": [0.0, 0.2, 0.2],
+                "ka": 0.2,
+                "kd": 0.8,
+                "ks": 0,
+                "n": 1
+            }
+        }
+    ]
+}
